@@ -1,0 +1,19 @@
+{
+    "data" : "...",
+    
+    "loaders": [
+        { "type": "dsv", "separator": "," }
+    ],
+    
+    "parser" : {
+        "dataTypes": null
+    },
+
+    "mapping" : {
+
+        "mapper" : {},
+        "config" : {}
+    
+    }
+
+}

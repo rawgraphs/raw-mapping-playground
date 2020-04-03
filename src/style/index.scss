@@ -1,0 +1,21 @@
+@import "@primer/css/index.scss";
+
+// html, body {
+//     height: 100%;
+// }
+
+// #root {
+//     height: 100%;
+// }
+
+.fullpage{
+    // position: absolute;
+    height: auto;
+    width: 100%;
+    // overflow-y: auto;
+    
+    .with-header {
+        padding-top: 56px;
+    }
+    
+}
