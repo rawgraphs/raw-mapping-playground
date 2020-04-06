@@ -1,24 +1,25 @@
 import React from 'react'
+import { Navbar, Nav, Dropdown, Icon } from 'rsuite';
 
 
 export default function Header(){
 
-  return <div className="Header position-sticky top-0">
-  <div className="Header-item">
-    <a href="#" className="Header-link f4 d-flex flex-items-center">
-      <span>RAWGraphs Data Mapping Playground</span>
-    </a>
-  </div>
-  {/* <div className="Header-item">
-    <input type="search" className="form-control input-dark" />
-  </div>
-  <div className="Header-item Header-item--full">
-    Menu
-  </div> */}
-  {/* <div className="Header-item mr-0">
-    <img className="avatar" height="20" alt="@octocat" src="https://github.com/octocat.png" width="20"/>
-  </div> */}
-</div>
+  return  <Navbar appearance="inverse">
+   
+  <Navbar.Body>
+    <Nav>
+      <Nav.Item icon={<Icon icon="home" />}>Home</Nav.Item>
+      <Dropdown title="Load">
+        <Dropdown.Item>blah</Dropdown.Item>
+        <Dropdown.Item>blah</Dropdown.Item>
+        <Dropdown.Item>blah</Dropdown.Item>
+      </Dropdown>
+    </Nav>
+    <Nav pullRight>
+      <Nav.Item >RAWGraphs Mapping Playground</Nav.Item>
+    </Nav>
+  </Navbar.Body>
+</Navbar>
 
 
 }
