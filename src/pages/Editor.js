@@ -8,7 +8,7 @@ import isEqual from "lodash/isEqual";
 import isString from "lodash/isString";
 import JSONTree from "react-json-tree";
 import { Container, Header, Content, Message, Sidebar } from "rsuite";
-import { Panel, Divider } from "rsuite";
+import { Panel, Divider, Button } from "rsuite";
 import { Grid, Row, Col } from "rsuite";
 
 import "ace-builds/src-noconflict/mode-text";
@@ -30,10 +30,25 @@ function DataBoxCSV({ title, footerMessage, mode = "text", onChange }) {
 
   return (
     <Panel
-      header={
-        <div className="panel-header-flex">
-          {title}
-          <input
+      header={title}
+      // header={
+      //   <div className="panel-header-flex">
+      //     {title}
+      //     <input
+      //       className="form-control input-sm"
+      //       type="text"
+      //       placeholder="separator"
+      //       aria-label="separator"
+      //       value={pipeline.state.loaders[0].separator}
+      //       onChange={(e) => setDsvLoader(e.target.value)}
+      //     />
+      //   </div>
+      // }
+      shaded
+      collapsible defaultExpanded
+    >
+      <div className="box-toolbar">
+        <input
             className="form-control input-sm"
             type="text"
             placeholder="separator"
@@ -41,11 +56,7 @@ function DataBoxCSV({ title, footerMessage, mode = "text", onChange }) {
             value={pipeline.state.loaders[0].separator}
             onChange={(e) => setDsvLoader(e.target.value)}
           />
-        </div>
-      }
-      shaded
-      collapsible defaultExpanded
-    >
+      </div>
       <AceEditor
         mode={mode}
         theme="github"
@@ -122,15 +133,14 @@ function DataBoxDataType({ title, footerMessage, mode = "text", onChange }) {
     <Panel
       shaded
       collapsible defaultExpanded
-      header={
-        <div className="panel-header-flex">
-          {title}
-          <button className="btn btn-sm mr-2" type="button">
-            Empty
-          </button>
-        </div>
-      }
-    >
+      header={title}
+      >
+      
+      <div className="box-toolbar">
+          <Button type="button">
+            Reset
+          </Button>
+      </div>
       <AceEditor
         mode={mode}
         theme="github"
