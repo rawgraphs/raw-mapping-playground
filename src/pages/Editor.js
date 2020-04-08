@@ -1,13 +1,12 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import NavTop from "../components/Header";
 import Computer from "../components/Computer";
+import DatasetBox from "../components/DatasetBox";
 import AceEditor from "react-ace";
-import DataTable from "react-data-table-component";
 import get from "lodash/get";
 import isEqual from "lodash/isEqual";
 import isString from "lodash/isString";
-import JSONTree from "react-json-tree";
-import { Container, Header, Content, Message, Sidebar } from "rsuite";
+import { Container, Header, Content, Message } from "rsuite";
 import { Panel, Divider, Button } from "rsuite";
 import { Grid, Row, Col } from "rsuite";
 
@@ -31,19 +30,6 @@ function DataBoxCSV({ title, footerMessage, mode = "text", onChange }) {
   return (
     <Panel
       header={title}
-      // header={
-      //   <div className="panel-header-flex">
-      //     {title}
-      //     <input
-      //       className="form-control input-sm"
-      //       type="text"
-      //       placeholder="separator"
-      //       aria-label="separator"
-      //       value={pipeline.state.loaders[0].separator}
-      //       onChange={(e) => setDsvLoader(e.target.value)}
-      //     />
-      //   </div>
-      // }
       shaded
       collapsible defaultExpanded
     >
@@ -148,7 +134,6 @@ function DataBoxDataType({ title, footerMessage, mode = "text", onChange }) {
         height="300px"
         value={dataTypes}
         onChange={setDataTypes}
-        // name="UNIQUE_ID_OF_DIV"
         editorProps={{ $blockScrolling: true }}
       />
       <Divider></Divider>
@@ -165,72 +150,9 @@ function DataBoxDataType({ title, footerMessage, mode = "text", onChange }) {
         
       </Message>
     </Panel>
-    // <div className="Box">
-    //   <div className="Box-header d-flex flex-justify-between">
-    //     <h3 className="Box-title">{title}</h3>
-    //     <button className="btn btn-sm mr-2" type="button">
-    //       Empty
-    //     </button>
-    //   </div>
-    //   <div className="Box-body">
-    //     <AceEditor
-    //       mode={mode}
-    //       theme="github"
-    //       width="100%"
-    //       height="300px"
-    //       value={dataTypes}
-    //       onChange={setDataTypes}
-    //       // name="UNIQUE_ID_OF_DIV"
-    //       editorProps={{ $blockScrolling: true }}
-    //     />
-    //   </div>
-    //   <div
-    //     className={
-    //       parsedDataTypes.error
-    //         ? "Box-footer bg-red-light"
-    //         : parsedDataTypes.value
-    //         ? "Box-footer bg-green-light"
-    //         : "Box-footer"
-    //     }
-    //   >
-    //     {footerMessage}
-    //   </div>
-    // </div>
   );
 }
-
-function Dataset() {
-  const pipeline = usePipeline();
-
-  const { state } = pipeline;
-  const results = get(state, "parseDatasetResults");
-  const currentDataTypes = get(pipeline.state, "parser.dataTypes");
-  console.log("results here", results);
-
-  if (!results || !currentDataTypes) {
-    return null;
-  }
-
-  const { dataset, dataTypes, errors } = results;
-  console.log("dataTypes", dataTypes);
-  console.log("errors", errors);
-
-  const columns = Object.keys(currentDataTypes).map((name) => ({
-    name: `${name} [${currentDataTypes[name]}]`,
-    selector: name,
-    sortable: true,
-  }));
-
-  return (
-    <Panel shaded header="Parsed data" collapsible defaultExpanded>
-      <DataTable columns={columns} data={dataset} pagination />
-      <Divider></Divider>
-      <JSONTree data={dataset}></JSONTree>
-
-    </Panel>
-    
-  );
-}
+ 
 
 export default function Editor({ initialExample }) {
   return (
@@ -254,7 +176,7 @@ export default function Editor({ initialExample }) {
           </Row>
           <Row gutter={16} style={{marginTop:16}}>
             <Col sm={24}>
-            <Dataset />
+            <DatasetBox />
             </Col>
 
           </Row>
@@ -262,34 +184,6 @@ export default function Editor({ initialExample }) {
         <Computer />
       </Content>
     </Container>
-    // <div className="fullpage with-header">
-    //   <Header></Header>
 
-    //   <div className="container-xl p-4">
-    //     <div className="clearfix gutter-condensed">
-    //       <div className="col-8 float-left">
-    //         <DataBoxCSV title="Data" footerMessage="Paste CSV data here" />
-    //       </div>
-    //       <div className="col-4 float-left">
-    //         <DataBoxDataType
-    //           title="Data Types"
-    //           footerMessage="Optional data types declaration (JSON)"
-    //           mode="json"
-    //         />
-    //       </div>
-    //     </div>
-
-    //     <div className="clearfix gutter-condensed">
-    //       <div className="col-8 float-left">
-    //         <Dataset />
-    //       </div>
-    //       <div className="col-4 float-left">
-
-    //       </div>
-    //     </div>
-    //   </div>
-
-    //   <Computer />
-    // </div>
   );
 }
