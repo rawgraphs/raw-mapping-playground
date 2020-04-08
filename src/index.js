@@ -5,6 +5,10 @@ import './style/index.scss'
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+import "brace/mode/text";
+import "brace/mode/json";
+import "brace/theme/github";
+
 ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
