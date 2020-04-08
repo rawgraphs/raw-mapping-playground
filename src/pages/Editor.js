@@ -15,8 +15,6 @@ import "ace-builds/src-noconflict/mode-text";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-github";
 
-import { parseDataset } from "raw-lib";
-import { TextInput } from "@primer/components";
 import { usePipeline } from "../state";
 import isPlainObject from "lodash/isPlainObject";
 

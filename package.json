@@ -10,7 +10,7 @@
     "d3-dsv": "^1.2.0",
     "lodash": "^4.17.15",
     "node-sass": "^4.13.1",
-    "raw-lib": "/Users/bianchimro/projects/raw-lib",
+    "raw-lib": "http://inmagik-public.ams3.digitaloceanspaces.com/raw-wip.tar.gz",
     "raw-loader": "^4.0.0",
     "react": "^16.13.0",
     "react-ace": "^8.1.0",
@@ -21,7 +21,8 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "react-split": "^2.0.7",
-    "rsuite": "^4.3.3"
+    "rsuite": "^4.3.3",
+    "styled-components": "^5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
