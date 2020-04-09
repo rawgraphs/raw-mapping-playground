@@ -1,6 +1,7 @@
 import React from "react";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import testDsv from '!raw-loader!./data/titanic.tsv'
+import { dispersionMapper } from './exampleConfigs'
 
 function parseSeparator(separator){
   if(separator === '\t'){
@@ -20,7 +21,7 @@ const EMPTY_PIPELINE = {
   },
 
   mapping: {
-    mapper: {},
+    mapper: dispersionMapper,
     config: {}
   },
 
@@ -45,6 +46,9 @@ function pipelineReducer(state, action) {
     }
     case "SET_PARSE_DATASET_RESULTS": {
       return { ...state, parseDatasetResults: action.payload };
+    }
+    case "SET_MAPPER": {
+      return { ...state, mapping: {...state.mapping, mapper: action.payload} };
     }
     default: {
       throw new Error(`Unsupported action type: ${action.type}`);
@@ -71,6 +75,10 @@ export function usePipeline() {
   const setParseDatasetResults = results => dispatch({ type: "SET_PARSE_DATASET_RESULTS", payload: results });
   const setDataTypes = dataTypes => dispatch({ type: "SET_DATA_TYPES", payload: dataTypes });
 
+  const setMapper = mapper => dispatch({ type: "SET_MAPPER", payload: mapper });
+
+
+
   return {
     state,
     dispatch,
@@ -78,5 +86,6 @@ export function usePipeline() {
     setLoaders,
     setParseDatasetResults,
     setDataTypes,
+    setMapper,
   };
 }

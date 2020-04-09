@@ -33,7 +33,7 @@ export default function DatasetBox(){
         <Nav.Item eventKey="json">JSON</Nav.Item>
       </Nav>
       {activeTab === "table" && <DataTable columns={columns} data={dataset} pagination />}
-      {activeTab==="json" && <JSONTree data={dataset}></JSONTree>}  
+      {activeTab==="json" && <div style={{height:500, overflowY: 'auto'}}><JSONTree data={dataset}></JSONTree></div> }  
     </Panel>
     
   );
