@@ -1,5 +1,6 @@
 {
   "name": "raw-playground",
+  "homepage": "https://rawgraphs.github.io/raw-mapping-playground",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -9,6 +10,8 @@
     "ace-builds": "^1.4.9",
     "brace": "^0.11.1",
     "d3-dsv": "^1.2.0",
+    "file-saver": "^2.0.2",
+    "gh-pages": "^2.2.0",
     "lodash": "^4.17.15",
     "node-sass": "^4.13.1",
     "raw-lib": "http://inmagik-public.ams3.digitaloceanspaces.com/raw-wip.tar.gz",
@@ -26,6 +29,8 @@
     "styled-components": "^5.0.1"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
