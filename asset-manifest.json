@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/raw-mapping-playground/static/css/main.27b55afe.chunk.css",
+    "main.js": "/raw-mapping-playground/static/js/main.7d932b03.chunk.js",
+    "main.js.map": "/raw-mapping-playground/static/js/main.7d932b03.chunk.js.map",
+    "runtime-main.js": "/raw-mapping-playground/static/js/runtime-main.4de6b8ed.js",
+    "runtime-main.js.map": "/raw-mapping-playground/static/js/runtime-main.4de6b8ed.js.map",
+    "static/css/2.aa9cacd8.chunk.css": "/raw-mapping-playground/static/css/2.aa9cacd8.chunk.css",
+    "static/js/2.c5408461.chunk.js": "/raw-mapping-playground/static/js/2.c5408461.chunk.js",
+    "static/js/2.c5408461.chunk.js.map": "/raw-mapping-playground/static/js/2.c5408461.chunk.js.map",
+    "index.html": "/raw-mapping-playground/index.html",
+    "precache-manifest.ad156a8e16dc6bc4bbe51d90be6369f2.js": "/raw-mapping-playground/precache-manifest.ad156a8e16dc6bc4bbe51d90be6369f2.js",
+    "service-worker.js": "/raw-mapping-playground/service-worker.js",
+    "static/css/2.aa9cacd8.chunk.css.map": "/raw-mapping-playground/static/css/2.aa9cacd8.chunk.css.map",
+    "static/css/main.27b55afe.chunk.css.map": "/raw-mapping-playground/static/css/main.27b55afe.chunk.css.map",
+    "static/js/2.c5408461.chunk.js.LICENSE.txt": "/raw-mapping-playground/static/js/2.c5408461.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.4de6b8ed.js",
+    "static/css/2.aa9cacd8.chunk.css",
+    "static/js/2.c5408461.chunk.js",
+    "static/css/main.27b55afe.chunk.css",
+    "static/js/main.7d932b03.chunk.js"
+  ]
+}
