@@ -1,17 +1,18 @@
 import React, { useCallback } from 'react'
-import { usePipeline } from "../state";
+import { usePipelineActions, usePipelineState } from "../state";
 import { Panel, Divider, Message } from "rsuite";
 import AceEditor from "react-ace";
 
 
 export default function DataBoxCSV({ title, footerMessage, mode = "text", onChange }) {
-  const pipeline = usePipeline();
+  const {setLoaders, setData} = usePipelineActions()
+  const {loaders, data} = usePipelineState()
 
   const setDsvLoader = useCallback(
     (separator) => {
-      return pipeline.setLoaders([{ type: "dsv", separator }]);
+      return setLoaders([{ type: "dsv", separator }]);
     },
-    [pipeline]
+    [setLoaders]
   );
 
   return (
@@ -26,7 +27,7 @@ export default function DataBoxCSV({ title, footerMessage, mode = "text", onChan
             type="text"
             placeholder="separator"
             aria-label="separator"
-            value={pipeline.state.loaders[0].separator}
+            value={loaders[0].separator}
             onChange={(e) => setDsvLoader(e.target.value)}
           />
       </div>
@@ -35,8 +36,8 @@ export default function DataBoxCSV({ title, footerMessage, mode = "text", onChan
         theme="github"
         width="100%"
         height="300px"
-        value={pipeline.state.data || ""}
-        onChange={pipeline.setData}
+        value={data || ""}
+        onChange={setData}
         editorProps={{ $blockScrolling: true }}
       />
       <Divider></Divider>

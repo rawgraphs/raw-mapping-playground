@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { usePipeline } from '../state'
+import { usePipelineState, usePipelineActions } from '../state'
 import { dsvFormat, tsvParse } from "d3-dsv";
 import get from 'lodash/get'
 import { parseDataset } from 'raw-lib'
@@ -29,11 +29,11 @@ function getLoader(loaders){
 
 export default function Computer(){
 
-  const pipeline = usePipeline()
+  const { setParseDatasetResults } = usePipelineActions()
 
-  const { state } = pipeline
-  const { data, loaders } = state
+  const {data, loaders, parser } =  usePipelineState()
 
+  
   const loader = useMemo(() => {
     return getLoader(loaders)
   }, [loaders])
@@ -46,17 +46,19 @@ export default function Computer(){
 
   }, [data, loader])
 
+  console.log("rawDataset", rawDataset)
   
   useEffect(() => {
-    const [dataset, dataTypes, errors] = parseDataset(rawDataset, pipeline.state.parser.dataTypes)
-    console.log("123", pipeline.state.parser.dataTypes)
+    const [dataset, dataTypes, errors] = parseDataset(rawDataset, parser.dataTypes)
+    
     const results = {
       dataset,
       dataTypes,
       errors,
     }
-    pipeline.setParseDatasetResults(results, dataTypes)
-  }, [rawDataset,  pipeline.state.parser.dataTypes])
+    console.log("123", parser.dataTypes, results)
+    setParseDatasetResults(results)
+  }, [rawDataset, parser.dataTypes, setParseDatasetResults])
 
 
   return null

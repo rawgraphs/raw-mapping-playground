@@ -3,7 +3,7 @@ import AceEditor from "react-ace";
 import get from "lodash/get";
 import isEqual from "lodash/isEqual";
 import isString from "lodash/isString";
-import { usePipeline } from "../state";
+import { usePipelineActions, usePipelineState } from "../state";
 import isPlainObject from "lodash/isPlainObject";
 import { Panel, Divider, Message, Button } from "rsuite";
 
@@ -27,13 +27,15 @@ function validateMapper(mapper) {
 }
 
 export default function DataBoxMapper({ title, footerMessage, mode = "text", onChange }) {
-  const pipeline = usePipeline();
-  const currentMapper = get(pipeline.state, "mapping.mapper");
-  const [mapper, setMapper] = useState("");
+  const {setMapper} = usePipelineActions()
+  const {mapping, parser} = usePipelineState()
+
+  const currentMapper = get(mapping, "mapper");
+  const [mapper, setUserMapper] = useState("");
   console.log("currentMapper" , currentMapper)
   useEffect(() => {
     if (!mapper && currentMapper) {
-      setMapper(JSON.stringify(currentMapper, null, 2));
+      setUserMapper(JSON.stringify(currentMapper, null, 2));
     }
   }, [mapper, currentMapper]);
 
@@ -59,8 +61,8 @@ export default function DataBoxMapper({ title, footerMessage, mode = "text", onC
     if (isEqual(parsedMapper.value, currentMapper)) {
       return;
     }
-    pipeline.setMapper(parsedMapper.value);
-  }, [currentMapper, parsedMapper, pipeline]);
+    setMapper(parsedMapper.value);
+  }, [currentMapper, parsedMapper, setMapper]);
 
   return (
     <Panel

@@ -3,7 +3,7 @@ import AceEditor from "react-ace";
 import get from "lodash/get";
 import isEqual from "lodash/isEqual";
 import isString from "lodash/isString";
-import { usePipeline } from "../state";
+import { usePipelineActions, usePipelineState } from "../state";
 import isPlainObject from "lodash/isPlainObject";
 import { Panel, Divider, Message, Button } from "rsuite";
 
@@ -16,8 +16,10 @@ function validateMapping(mapper) {
 }
 
 export default function DataBoxMappingConfig({ title, footerMessage }) {
-  const pipeline = usePipeline();
-  const currentConfig = get(pipeline.state, "mapping.config");
+  const {setMappingConfig} = usePipelineActions()
+  const {mapping, parser} = usePipelineState()
+
+  const currentConfig = get(mapping, "config");
   const [config, setConfig] = useState("");
   console.log("currentConfig" , currentConfig)
   useEffect(() => {
@@ -48,8 +50,8 @@ export default function DataBoxMappingConfig({ title, footerMessage }) {
     if (isEqual(parsedConfig.value, currentConfig)) {
       return;
     }
-    pipeline.setMapper(parsedConfig.value);
-  }, [currentConfig, parsedConfig, pipeline]);
+    setMappingConfig(parsedConfig.value);
+  }, [currentConfig, parsedConfig, setMappingConfig]);
 
   return (
     <Panel

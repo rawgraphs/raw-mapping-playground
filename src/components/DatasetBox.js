@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import get from "lodash/get";
-import { usePipeline } from "../state";
+import { usePipelineState, usePipelineResults } from "../state";
 import { Panel, Nav } from "rsuite";
 import DataTable from "react-data-table-component";
 import JSONTree from "react-json-tree";
@@ -8,17 +8,17 @@ import JSONTree from "react-json-tree";
 
 export default function DatasetBox(){
 
-  const pipeline = usePipeline();
-  const { state } = pipeline;
-  const results = get(state, "parseDatasetResults");
-  const currentDataTypes = get(pipeline.state, "parser.dataTypes");
+  const { parser } = usePipelineState();
+  const { parseDatasetResults } = usePipelineResults()
+  
+  const currentDataTypes = get(parser, "dataTypes");
   const [activeTab, setActiveTab] = useState("table")
 
-  if (!results || !currentDataTypes) {
+  if (!parseDatasetResults || !currentDataTypes) {
     return null;
   }
 
-  const { dataset, dataTypes, errors } = results;
+  const { dataset, dataTypes, errors } = parseDatasetResults;
   
   const columns = Object.keys(currentDataTypes).map((name) => ({
     name: `${name} [${currentDataTypes[name]}]`,

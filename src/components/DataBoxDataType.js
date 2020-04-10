@@ -3,7 +3,7 @@ import AceEditor from "react-ace";
 import get from "lodash/get";
 import isEqual from "lodash/isEqual";
 import isString from "lodash/isString";
-import { usePipeline } from "../state";
+import { usePipelineActions, usePipelineState, usePipelineResults } from "../state";
 import isPlainObject from "lodash/isPlainObject";
 import { Panel, Divider, Message, Button } from "rsuite";
 
@@ -29,14 +29,20 @@ function validateDataTypes(dt) {
 }
 
 export default function DataBoxDataType({ title, footerMessage, mode = "text", onChange }) {
-  const pipeline = usePipeline();
-  const x = get(pipeline.state, "parseDatasetResults.dataTypes");
-  const currentDataTypes = get(pipeline.state, "parser.dataTypes");
-  const [dataTypes, setDataTypes] = useState("");
+  
+  const {setDataTypes} = usePipelineActions()
+  const {parser} = usePipelineState()
+  const {parseDatasetResults } = usePipelineResults()
+  
+
+
+  const x = get(parseDatasetResults, "dataTypes");
+  const currentDataTypes = get(parser, "dataTypes");
+  const [dataTypes, setUserDataTypes] = useState("");
 
   useEffect(() => {
     if (!dataTypes && x) {
-      setDataTypes(JSON.stringify(x, null, 2));
+      setUserDataTypes(JSON.stringify(x, null, 2));
     }
   }, [dataTypes, x]);
 
@@ -54,6 +60,7 @@ export default function DataBoxDataType({ title, footerMessage, mode = "text", o
       return { error: err };
     }
   }, [dataTypes]);
+  console.log("parsedDataTypes", parsedDataTypes)
 
   useEffect(() => {
     if (parsedDataTypes.error) {
@@ -62,8 +69,8 @@ export default function DataBoxDataType({ title, footerMessage, mode = "text", o
     if (isEqual(parsedDataTypes.value, currentDataTypes)) {
       return;
     }
-    pipeline.setDataTypes(parsedDataTypes.value);
-  }, [currentDataTypes, parsedDataTypes, pipeline]);
+    setDataTypes(parsedDataTypes.value);
+  }, [currentDataTypes, parsedDataTypes, setDataTypes]);
 
   return (
     <Panel
@@ -83,13 +90,13 @@ export default function DataBoxDataType({ title, footerMessage, mode = "text", o
         width="100%"
         height="300px"
         value={dataTypes}
-        onChange={setDataTypes}
+        onChange={setUserDataTypes}
         editorProps={{ $blockScrolling: true }}
       />
       <Divider></Divider>
       <Message
         description={footerMessage}
-        mode={
+        type={
           parsedDataTypes.error
             ? "error"
             : parsedDataTypes.value
