@@ -83,10 +83,7 @@ export default function DataBoxMapper({ title, footerMessage, mode = "text", onC
         height="300px"
         value={mapper}
         onChange={v => {
-          console.log("v")
-          if(!isEqual(v, currentMapper)){
-            setMapper(v)
-          }
+          setUserMapper(v)
         }}
         editorProps={{ $blockScrolling: true }}
       />
