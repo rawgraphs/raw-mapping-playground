@@ -1,7 +1,7 @@
 import React, { useCallback, useContext} from "react";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import testDsv from '!raw-loader!./data/titanic.tsv'
-import { dispersionMapper } from './exampleConfigs'
+import { dispersionMapper, groupMapper, groupAggregateMapper } from './exampleConfigs'
 import { config } from "ace-builds";
 import pick from 'lodash/pick'
 
@@ -13,6 +13,23 @@ function parseSeparator(separator){
 }
 
 
+
+const groupAggregateMapping = {
+  x: {
+    value: 'Fare',
+    config: {
+      aggregation: 'mean',
+    }
+  },
+  y: {
+    value: 'Age',
+  },
+  groupAgg: {
+    value: ['Gender', 'Destination']
+  },
+
+}
+
 const EMPTY_PIPELINE = {
   data: testDsv,
 
@@ -23,11 +40,8 @@ const EMPTY_PIPELINE = {
   },
 
   mapping: {
-    mapper: dispersionMapper,
-    config: {
-      x: { value : "Age"},
-      y: { value : "Age"},
-    }
+    mapper: groupAggregateMapper,
+    config: groupAggregateMapping
   },
 
   parseDatasetResults : null,

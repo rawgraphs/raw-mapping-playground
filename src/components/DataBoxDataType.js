@@ -1,12 +1,16 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from "react";
 import AceEditor from "react-ace";
 import get from "lodash/get";
 import isEqual from "lodash/isEqual";
 import isString from "lodash/isString";
-import { usePipelineActions, usePipelineState, usePipelineResults } from "../state";
+import {
+  usePipelineActions,
+  usePipelineState,
+  usePipelineResults,
+} from "../state";
 import isPlainObject from "lodash/isPlainObject";
-import { Panel, Divider, Message, Button } from "rsuite";
-
+import { Panel, Divider, Message, Badge, Nav, Icon } from "rsuite";
+import { inferTypes } from "raw-lib";
 
 function validateType(t) {
   const types = ["number", "date", "string", "boolean"];
@@ -28,23 +32,27 @@ function validateDataTypes(dt) {
   });
 }
 
-export default function DataBoxDataType({ title, footerMessage, mode = "text", onChange }) {
-  
-  const {setDataTypes} = usePipelineActions()
-  const {parser} = usePipelineState()
-  const {parseDatasetResults } = usePipelineResults()
-  
+export default function DataBoxDataType({
+  title,
+  footerMessage,
+  mode = "text",
+  onChange,
+}) {
+  const { setDataTypes } = usePipelineActions();
+  const { parser, data } = usePipelineState();
+  const { parseDatasetResults } = usePipelineResults();
 
-
-  const x = get(parseDatasetResults, "dataTypes");
+  const dt = get(parseDatasetResults, "dataTypes");
   const currentDataTypes = get(parser, "dataTypes");
   const [dataTypes, setUserDataTypes] = useState("");
 
+  const [activeTab, setActiveTab] = useState("json");
+
   useEffect(() => {
-    if (!dataTypes && x) {
-      setUserDataTypes(JSON.stringify(x, null, 2));
+    if (!dataTypes && dt) {
+      setUserDataTypes(JSON.stringify(dt, null, 2));
     }
-  }, [dataTypes, x]);
+  }, [data, dataTypes, dt]);
 
   const parsedDataTypes = useMemo(() => {
     if (!dataTypes) {
@@ -60,7 +68,7 @@ export default function DataBoxDataType({ title, footerMessage, mode = "text", o
       return { error: err };
     }
   }, [dataTypes]);
-  console.log("parsedDataTypes", parsedDataTypes)
+  console.log("parsedDataTypes", parsedDataTypes);
 
   useEffect(() => {
     if (parsedDataTypes.error) {
@@ -73,26 +81,43 @@ export default function DataBoxDataType({ title, footerMessage, mode = "text", o
   }, [currentDataTypes, parsedDataTypes, setDataTypes]);
 
   return (
-    <Panel
-      shaded
-      collapsible defaultExpanded
-      header={title}
+    <Panel shaded collapsible defaultExpanded header={title}>
+      <Nav
+        activeKey={activeTab}
+        appearance="tabs"
+        onSelect={setActiveTab}
+        style={{ marginBottom: 18 }}
       >
-      
-      <div className="box-toolbar">
+        <Nav.Item eventKey="json">Definition</Nav.Item>
+        <Nav.Item eventKey="log">
+          Log {parsedDataTypes.error && <Icon style={{ color: 'crimson' }} icon="exclamation-triangle" />}
+        </Nav.Item>
+      </Nav>
+      {/* <div className="box-toolbar">
           <Button type="button">
             Reset
           </Button>
-      </div>
-      <AceEditor
-        mode={mode}
-        theme="github"
-        width="100%"
-        height="300px"
-        value={dataTypes}
-        onChange={setUserDataTypes}
-        editorProps={{ $blockScrolling: true }}
-      />
+      </div> */}
+
+      {activeTab === "json" && (
+        <AceEditor
+          mode={mode}
+          theme="github"
+          width="100%"
+          height="300px"
+          value={dataTypes}
+          onChange={setUserDataTypes}
+          editorProps={{ $blockScrolling: true }}
+        />
+      )}
+
+      {activeTab === "log" && (
+        <div className="log-datatypes">
+          {parsedDataTypes.error &&
+            (parsedDataTypes.error.message || "Error parsing json")}
+        </div>
+      )}
+
       <Divider></Divider>
       <Message
         description={footerMessage}
@@ -103,9 +128,7 @@ export default function DataBoxDataType({ title, footerMessage, mode = "text", o
             ? "success"
             : "info"
         }
-      >
-        
-      </Message>
+      ></Message>
     </Panel>
   );
 }

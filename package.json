@@ -14,7 +14,6 @@
     "gh-pages": "^2.2.0",
     "lodash": "^4.17.15",
     "node-sass": "^4.13.1",
-    "raw-lib": "http://inmagik-public.ams3.digitaloceanspaces.com/raw-wip.tar.gz",
     "raw-loader": "^4.0.0",
     "react": "^16.13.0",
     "react-ace": "^8.1.0",
