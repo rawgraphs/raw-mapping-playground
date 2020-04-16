@@ -39,7 +39,7 @@ export default function DataBoxDataType({
   onChange,
 }) {
   const { setDataTypes } = usePipelineActions();
-  const { parser, data } = usePipelineState();
+  const { parser, data, loadedAt } = usePipelineState();
   const { parseDatasetResults } = usePipelineResults();
 
   const dt = get(parseDatasetResults, "dataTypes");
@@ -52,7 +52,16 @@ export default function DataBoxDataType({
     if ((!currentDataTypes || isEqual(currentDataTypes, {})) && dt) {
       setUserDataTypes(JSON.stringify(dt, null, 2));
     }
-  }, [data, currentDataTypes, dt]);
+  }, [currentDataTypes, dt]);
+
+  useEffect(() => {
+    if(currentDataTypes){
+      setUserDataTypes(JSON.stringify(currentDataTypes, null, 2));
+    } else {
+      setUserDataTypes("")
+    }
+    
+  }, [loadedAt]);
 
   const parsedDataTypes = useMemo(() => {
     if (!dataTypes) {

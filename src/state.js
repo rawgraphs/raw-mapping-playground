@@ -152,7 +152,6 @@ export function PipelineActionsProvider(props) {
   
   const setPipeline = useCallback(
     (pipeline) => {
-      console.log(111, pipeline)
       return dispatch({ type: "SET_PIPELINE", payload: {...pipeline, loadedAt: new Date()} })
     },
     [dispatch]
