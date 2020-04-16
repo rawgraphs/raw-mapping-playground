@@ -49,10 +49,10 @@ export default function DataBoxDataType({
   const [activeTab, setActiveTab] = useState("json");
 
   useEffect(() => {
-    if (!dataTypes && dt) {
+    if ((!currentDataTypes || isEqual(currentDataTypes, {})) && dt) {
       setUserDataTypes(JSON.stringify(dt, null, 2));
     }
-  }, [data, dataTypes, dt]);
+  }, [data, currentDataTypes, dt]);
 
   const parsedDataTypes = useMemo(() => {
     if (!dataTypes) {
@@ -68,7 +68,6 @@ export default function DataBoxDataType({
       return { error: err };
     }
   }, [dataTypes]);
-  console.log("parsedDataTypes", parsedDataTypes);
 
   useEffect(() => {
     if (parsedDataTypes.error) {

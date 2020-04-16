@@ -46,8 +46,7 @@ export default function Computer(){
 
   }, [data, loader])
 
-  console.log("rawDataset", rawDataset)
-  
+
   useEffect(() => {
     const [dataset, dataTypes, errors] = parseDataset(rawDataset, parser.dataTypes)
     
@@ -56,7 +55,6 @@ export default function Computer(){
       dataTypes,
       errors,
     }
-    console.log("123", parser.dataTypes, results)
     setParseDatasetResults(results)
   }, [rawDataset, parser.dataTypes, setParseDatasetResults])
 

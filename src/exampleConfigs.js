@@ -40,3 +40,47 @@ export const dispersionMapper = [x, y]
 export const groupMapper = [group, x, y]
 
 export const groupAggregateMapper = [groupAgg, x, y]
+
+
+
+
+export const groupAggregateMapping = {
+  x: {
+    value: 'Fare',
+    config: {
+      aggregation: 'mean',
+    }
+  },
+  y: {
+    value: 'Age',
+  },
+  groupAgg: {
+    value: ['Gender', 'Destination']
+  },
+
+}
+
+export const groupMapping = {
+  x: {
+    value: 'Fare',
+    config: {
+      aggregation: 'mean',
+    }
+  },
+  y: {
+    value: 'Age',
+  },
+  group: {
+    value: ['Gender', 'Destination']
+  },
+
+}
+
+export const dispersionMapping = {
+  x: {
+    value: 'Fare'
+  },
+  y: {
+    value: 'Age',
+  }
+}

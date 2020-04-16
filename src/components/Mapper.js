@@ -11,30 +11,23 @@ export default function Mapper(){
 
   const { setMapperResults } = usePipelineActions()
 
-  const { mapping } =  usePipelineState()
+  const { mapping, data } =  usePipelineState()
   const { parseDatasetResults } = usePipelineResults()
-
-  
-
-  console.log("mapping", mapping)
-  
   
   useEffect(() => {
-    if(!mapping.config || !get(parseDatasetResults, 'dataset')){
+    if(!mapping.config || !mapping.mapper || !get(parseDatasetResults, 'dataset' || !data)){
       return
     }
     try{
       validateMapping(mapping.mapper, mapping.config)  
-      console.log("mapping ok!")
       const mapper = makeMapper(mapping.mapper, mapping.config)
       const mappedData = mapper(parseDatasetResults.dataset)
-      console.log("mappedData", mappedData)
       setMapperResults(mappedData)
       
     } catch(err){
       console.error(err)
     }
-  }, [mapping.config, mapping.mapper, parseDatasetResults, setMapperResults])
+  }, [mapping.config, mapping.mapper, parseDatasetResults, setMapperResults, data])
 
 
   return null

@@ -17,16 +17,14 @@ function validateMapping(mapper) {
 
 export default function DataBoxMappingConfig({ title, footerMessage }) {
   const {setMappingConfig} = usePipelineActions()
-  const {mapping, parser} = usePipelineState()
+  const {mapping, loadedAt} = usePipelineState()
 
   const currentConfig = get(mapping, "config");
   const [config, setConfig] = useState("");
   console.log("currentConfig" , currentConfig)
   useEffect(() => {
-    if (!config && currentConfig) {
-      setConfig(JSON.stringify(currentConfig, null, 2));
-    }
-  }, [config, currentConfig]);
+    setConfig(JSON.stringify(currentConfig, null, 2));
+  }, [loadedAt]);
 
   const parsedConfig = useMemo(() => {
     if (!config) {

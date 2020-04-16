@@ -27,32 +27,52 @@ function validateMapper(mapper) {
 }
 
 export default function DataBoxMapper({ title, footerMessage, mode = "text", onChange }) {
+  
   const {setMapper} = usePipelineActions()
-  const {mapping, parser} = usePipelineState()
+  const {mapping, loadedAt } = usePipelineState()
 
   const currentMapper = get(mapping, "mapper");
-  const [mapper, setUserMapper] = useState("");
+  const [userMapper, setUserMapper] = useState("");
   console.log("currentMapper" , currentMapper)
-  useEffect(() => {
-    if (!mapper && currentMapper) {
-      setUserMapper(JSON.stringify(currentMapper, null, 2));
-    }
-  }, [mapper, currentMapper]);
+
+  const currentMapperString = useMemo(() => {
+    return JSON.stringify(currentMapper, null, 2)
+  }, [currentMapper])
 
   const parsedMapper = useMemo(() => {
-    if (!mapper) {
+    if (!userMapper) {
       const out = { value: null };
       return out;
     }
     try {
-      const value = JSON.parse(mapper);
+      const value = JSON.parse(userMapper);
       validateMapper(value);
       const out = { value };
       return out;
     } catch (err) {
       return { error: err };
     }
-  }, [mapper]);
+  }, [userMapper]);
+  
+  
+
+  useEffect(() => {
+    setUserMapper(currentMapperString);
+    
+  }, [loadedAt]);
+  
+  // useEffect(() => {
+  //   if ((!userMapper && currentMapper)) {
+  //     setUserMapper(currentMapperString);
+  //   }
+  // }, [userMapper, currentMapper, currentMapperString]);
+
+  // useEffect(() => {
+  //   if ((userMapper && currentMapperString === "null")) {
+  //     setUserMapper("");
+  //   }
+  // }, [userMapper, currentMapper, currentMapperString]);
+
 
   useEffect(() => {
     if (parsedMapper.error) {
@@ -81,7 +101,7 @@ export default function DataBoxMapper({ title, footerMessage, mode = "text", onC
         theme="github"
         width="100%"
         height="300px"
-        value={mapper}
+        value={userMapper}
         onChange={v => {
           setUserMapper(v)
         }}

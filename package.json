@@ -1,6 +1,6 @@
 {
   "name": "raw-playground",
-  "homepage": "https://rawgraphs.github.io/raw-mapping-playground",
+  "homepage-x": "https://rawgraphs.github.io/raw-mapping-playground",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

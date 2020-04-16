@@ -1,7 +1,8 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { usePipelineActions, usePipelineState } from "../state";
 import { Panel, Divider, Message } from "rsuite";
 import AceEditor from "react-ace";
+import get from 'lodash/get'
 
 
 export default function DataBoxCSV({ title, footerMessage, mode = "text", onChange }) {
@@ -15,6 +16,10 @@ export default function DataBoxCSV({ title, footerMessage, mode = "text", onChan
     [setLoaders]
   );
 
+  const loader = useMemo(() => {
+    return get(loaders, '[0]')
+  }, [loaders])
+
   return (
     <Panel
       header={title}
@@ -27,7 +32,7 @@ export default function DataBoxCSV({ title, footerMessage, mode = "text", onChan
             type="text"
             placeholder="separator"
             aria-label="separator"
-            value={loaders[0].separator}
+            value={loader ? loader.separator : ''}
             onChange={(e) => setDsvLoader(e.target.value)}
           />
       </div>
