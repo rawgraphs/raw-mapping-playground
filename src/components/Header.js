@@ -1,25 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Navbar, Nav, Dropdown, Icon, Button } from "rsuite";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
+import { Navbar, Nav, Dropdown, Icon, Loader } from "rsuite";
 import { saveAs } from "file-saver";
 import omit from 'lodash/omit'
 import { Uploader } from 'rsuite';
 import { DISPERSION_PIPELINE_STATE, GROUP_AGGREGATE_STATE, GROUP_PIPELINE_STATE } from '../examplePipelines'
 //import titanicDispersion from "../samples/titanic-dispersion.json";
-import { usePipelineState, usePipelineActions } from "../state";
+import { usePipelineState, usePipelineActions, usePipelineInternals } from "../state";
 import PipelineLoader from './PipelineLoader'
-
-const FileSaver = ({ title }) => {
-    const state = usePipelineState();
-    const saveData = useCallback(() => {
-    const value = JSON.stringify(omit(state, ['loadedAt']));
-
-    var blob = new Blob([value], { type: "application/json" });
-    saveAs(blob, "pipeline.json");
-  }, [state]);
-
-  return <span onClick={saveData}>{title}</span>;
-};
-
+import get from "lodash/get";
+ 
 
 
 
@@ -29,11 +18,13 @@ export default function Header() {
   const state = usePipelineState();
 
   const saveData = useCallback(() => {
-    const value = JSON.stringify(omit(state, ['loadedAt']));
+    const value = JSON.stringify(omit(state, ['loadedAt', 'computing']));
 
     var blob = new Blob([value], { type: "application/json" });
     saveAs(blob, "pipeline.json");
   }, [state]);
+
+  const { computing } = usePipelineInternals()
 
   
   useEffect(() => {
@@ -62,7 +53,12 @@ export default function Header() {
           
         </Nav>
         <Nav pullRight>
-          <Nav.Item>RAWGraphs Mapping Playground</Nav.Item>
+          <Nav.Item>
+            {computing && <Loader center></Loader>}
+          </Nav.Item>
+          <Nav.Item>
+            
+            RAWGraphs Mapping Playground</Nav.Item>
         </Nav>
       </Navbar.Body>
     </Navbar>

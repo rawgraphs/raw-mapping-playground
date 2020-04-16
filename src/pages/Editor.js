@@ -11,6 +11,7 @@ import MappedDatasetBox from "../components/MappedDatasetBox";
 
 import {
   PipelineStateProvider,
+  PipelineInternalsProvider,
   PipelineActionsProvider,
   PipelineResultsProvider,
   PipelineMapperResultsProvider,
@@ -25,6 +26,7 @@ export default function Editor({ initialExample }) {
     <PipelineProvider>
       <PipelineActionsProvider>
         <PipelineStateProvider>
+          <PipelineInternalsProvider>
           <PipelineResultsProvider>
             <PipelineMapperResultsProvider>
             <Container>
@@ -74,6 +76,7 @@ export default function Editor({ initialExample }) {
             </Container>
             </PipelineMapperResultsProvider>
           </PipelineResultsProvider>
+          </PipelineInternalsProvider>
         </PipelineStateProvider>
       </PipelineActionsProvider>
     </PipelineProvider>

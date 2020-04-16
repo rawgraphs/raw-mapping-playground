@@ -29,3 +29,12 @@ html, body {
     font-size: 14px;
     padding: 4px;
 }
+
+.message-toolbar{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 4px;
+    height: 40px;
+}

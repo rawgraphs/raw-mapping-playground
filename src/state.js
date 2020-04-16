@@ -17,7 +17,11 @@ function parseSeparator(separator) {
 }
 
 const EMPTY_PIPELINE = {
+  // internals --- not to be exported
   loadedAt: null,
+  computing: false,
+
+  // state
   data: null,
   loaders: [],
   parser: {
@@ -27,6 +31,8 @@ const EMPTY_PIPELINE = {
     mapper: null,
     config: null,
   },
+
+  //results
   parseDatasetResults: null,
   mapperResults: null,
 };
@@ -35,6 +41,7 @@ const PipelineContext = React.createContext();
 const PipelineResultsContext = React.createContext();
 const PipelineMapperResultsContext = React.createContext();
 const PipelineStateContext = React.createContext();
+const PipelineInternalsContext = React.createContext();
 const PipelineActionsContext = React.createContext();
 
 function pipelineReducer(state, action) {
@@ -77,9 +84,9 @@ function pipelineReducer(state, action) {
       const { data, loaders, parser, mapping, loadedAt } = action.payload;
       return { ...state, data, loaders, parser, mapping, loadedAt };
     }
-    case "SET_LOADED_AT": {
-      const { loadedAt } = action.payload;
-      return { ...state, loadedAt };
+
+    case "SET_COMPUTING": {
+      return { ...state, computing: action.payload };
     }
 
     default: {
@@ -101,6 +108,15 @@ export function PipelineStateProvider(props) {
     [state]
   );
   return <PipelineStateContext.Provider value={value} {...props} />;
+}
+
+export function PipelineInternalsProvider(props) {
+  const [state, dispatch] = useContext(PipelineContext);
+  const value = React.useMemo(
+    () => pick(state, ["computing"]),
+    [state]
+  );
+  return <PipelineInternalsContext.Provider value={value} {...props} />;
 }
 
 export function PipelineResultsProvider(props) {
@@ -149,11 +165,19 @@ export function PipelineActionsProvider(props) {
     (results) => dispatch({ type: "SET_MAPPER_RESULTS", payload: results }),
     [dispatch]
   );
-  
+
   const setPipeline = useCallback(
     (pipeline) => {
-      return dispatch({ type: "SET_PIPELINE", payload: {...pipeline, loadedAt: new Date()} })
+      return dispatch({
+        type: "SET_PIPELINE",
+        payload: { ...pipeline, loadedAt: new Date() },
+      });
     },
+    [dispatch]
+  );
+
+  const setComputing = useCallback(
+    (computing) => dispatch({ type: "SET_COMPUTING", payload: computing }),
     [dispatch]
   );
 
@@ -167,8 +191,10 @@ export function PipelineActionsProvider(props) {
       setMappingConfig,
       setMapperResults,
       setPipeline,
+      setComputing,
     }),
     [
+      setComputing,
       setData,
       setDataTypes,
       setLoaders,
@@ -187,6 +213,14 @@ export function usePipelineState() {
   const context = React.useContext(PipelineStateContext);
   if (!context) {
     throw new Error(`usePipeline must be used within a PipelineStateProvider`);
+  }
+  return context;
+}
+
+export function usePipelineInternals() {
+  const context = React.useContext(PipelineInternalsContext);
+  if (!context) {
+    throw new Error(`usePipeline must be used within a PipelineInternalsProvider`);
   }
   return context;
 }

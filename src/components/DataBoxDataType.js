@@ -9,7 +9,7 @@ import {
   usePipelineResults,
 } from "../state";
 import isPlainObject from "lodash/isPlainObject";
-import { Panel, Divider, Message, Badge, Nav, Icon } from "rsuite";
+import { Panel, Divider, Message, Toggle, Nav, Icon, Button } from "rsuite";
 import { inferTypes } from "raw-lib";
 
 function validateType(t) {
@@ -39,44 +39,62 @@ export default function DataBoxDataType({
   onChange,
 }) {
   const { setDataTypes } = usePipelineActions();
-  const { parser, data, loadedAt } = usePipelineState();
+  const { parser, data, loaders, loadedAt } = usePipelineState();
   const { parseDatasetResults } = usePipelineResults();
 
-  const dt = get(parseDatasetResults, "dataTypes");
+  const dt = useMemo(() => {
+    return get(parseDatasetResults, "dataTypes")
+  }, [parseDatasetResults])
+ 
   const currentDataTypes = get(parser, "dataTypes");
-  const [dataTypes, setUserDataTypes] = useState("");
+  const [userDataTypes, setUserDataTypes] = useState("");
 
   const [activeTab, setActiveTab] = useState("json");
 
+  const [autoReload, setAutoReload] = useState(false);
+
   useEffect(() => {
     if ((!currentDataTypes || isEqual(currentDataTypes, {})) && dt) {
-      setUserDataTypes(JSON.stringify(dt, null, 2));
+      if(data){
+        setUserDataTypes(JSON.stringify(dt, null, 2));
+      } else {
+
+      }
+      
     }
-  }, [currentDataTypes, dt]);
+  }, [currentDataTypes, data, dt]);
 
   useEffect(() => {
-    if(currentDataTypes){
+    if (currentDataTypes) {
       setUserDataTypes(JSON.stringify(currentDataTypes, null, 2));
     } else {
-      setUserDataTypes("")
+      setUserDataTypes("");
     }
-    
   }, [loadedAt]);
 
+ 
+
+  useEffect(() => {
+    if (autoReload) {
+      console.log("should autoreload", parseDatasetResults)
+      setUserDataTypes("")
+    }
+  }, [data, loaders]);
+
   const parsedDataTypes = useMemo(() => {
-    if (!dataTypes) {
+    if (!userDataTypes) {
       const out = { value: null };
       return out;
     }
     try {
-      const value = JSON.parse(dataTypes);
+      const value = JSON.parse(userDataTypes);
       validateDataTypes(value);
       const out = { value };
       return out;
     } catch (err) {
       return { error: err };
     }
-  }, [dataTypes]);
+  }, [userDataTypes]);
 
   useEffect(() => {
     if (parsedDataTypes.error) {
@@ -98,7 +116,10 @@ export default function DataBoxDataType({
       >
         <Nav.Item eventKey="json">Definition</Nav.Item>
         <Nav.Item eventKey="log">
-          Log {parsedDataTypes.error && <Icon style={{ color: 'crimson' }} icon="exclamation-triangle" />}
+          Log{" "}
+          {parsedDataTypes.error && (
+            <Icon style={{ color: "crimson" }} icon="exclamation-triangle" />
+          )}
         </Nav.Item>
       </Nav>
       {/* <div className="box-toolbar">
@@ -113,7 +134,7 @@ export default function DataBoxDataType({
           theme="github"
           width="100%"
           height="300px"
-          value={dataTypes}
+          value={userDataTypes}
           onChange={setUserDataTypes}
           editorProps={{ $blockScrolling: true }}
         />
@@ -127,8 +148,16 @@ export default function DataBoxDataType({
       )}
 
       <Divider></Divider>
+      <div className="message-toolbar">
+        <div>
+          <Toggle checked={autoReload} onChange={setAutoReload}></Toggle>
+          {'  '}Autoreload
+        </div>
+        <Button onClick={() => { setUserDataTypes("") }}>Reload</Button>
+      </div>
+
       <Message
-        description={footerMessage}
+        description={<div>{footerMessage}</div>}
         type={
           parsedDataTypes.error
             ? "error"

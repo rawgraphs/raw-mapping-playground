@@ -29,7 +29,7 @@ function getLoader(loaders){
 
 export default function Computer(){
 
-  const { setParseDatasetResults } = usePipelineActions()
+  const { setParseDatasetResults, setComputing} = usePipelineActions()
 
   const {data, loaders, parser } =  usePipelineState()
 
@@ -38,16 +38,25 @@ export default function Computer(){
     return getLoader(loaders)
   }, [loaders])
 
-  const rawDataset = useMemo(() => {
-    if(!data || !loader){
-      return []
-    }
-    return loader(data)
+  // const rawDataset = useMemo(() => {
+    
+  //   // setComputing(true)
+  //   const d = loader(data)
+  //   // setComputing(false)
+  //   return d
 
-  }, [data, loader])
+  // }, [data, loader])
+  
 
 
   useEffect(() => {
+
+    if(!data || !loader){
+      return
+    }
+    
+    setComputing(true)
+    const rawDataset = loader(data)
     const [dataset, dataTypes, errors] = parseDataset(rawDataset, parser.dataTypes)
     
     const results = {
@@ -56,7 +65,9 @@ export default function Computer(){
       errors,
     }
     setParseDatasetResults(results)
-  }, [rawDataset, parser.dataTypes, setParseDatasetResults])
+    setComputing(false)
+
+  }, [parser.dataTypes, setParseDatasetResults, setComputing, data, loader])
 
 
   return null

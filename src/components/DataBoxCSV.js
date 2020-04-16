@@ -46,6 +46,7 @@ export default function DataBoxCSV({ title, footerMessage, mode = "text", onChan
         editorProps={{ $blockScrolling: true }}
       />
       <Divider></Divider>
+      <div className="message-toolbar"></div>
       <Message type="info" description={footerMessage} />
     </Panel>
   );
