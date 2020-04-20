@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from "react";
 import AceEditor from "react-ace";
 import get from "lodash/get";
 import isEqual from "lodash/isEqual";
 import isString from "lodash/isString";
 import { usePipelineActions, usePipelineState } from "../state";
 import isPlainObject from "lodash/isPlainObject";
-import { Panel, Divider, Message, Button } from "rsuite";
-
+import { Panel, Divider, Message, Button, Nav, Icon } from "rsuite";
 
 //#TODO: this should come from raw-lib
 function validateMapping(mapper) {
@@ -16,12 +15,13 @@ function validateMapping(mapper) {
 }
 
 export default function DataBoxMappingConfig({ title, footerMessage }) {
-  const {setMappingConfig} = usePipelineActions()
-  const {mapping, loadedAt} = usePipelineState()
+  const { setMappingConfig } = usePipelineActions();
+  const { mapping, loadedAt } = usePipelineState();
+  const [activeTab, setActiveTab] = useState("json");
 
   const currentConfig = get(mapping, "config");
   const [config, setConfig] = useState("");
-  console.log("currentConfig" , currentConfig)
+  console.log("currentConfig", currentConfig);
   useEffect(() => {
     setConfig(JSON.stringify(currentConfig, null, 2));
   }, [loadedAt]);
@@ -52,44 +52,54 @@ export default function DataBoxMappingConfig({ title, footerMessage }) {
   }, [currentConfig, parsedConfig, setMappingConfig]);
 
   return (
-    <Panel
-      shaded
-      collapsible defaultExpanded
-      header={title}
+    <Panel shaded collapsible defaultExpanded header={title}>
+      <Nav
+        activeKey={activeTab}
+        appearance="tabs"
+        onSelect={setActiveTab}
+        style={{ marginBottom: 18 }}
       >
-      
-      <div className="box-toolbar">
-          <Button type="button">
-            Reset
-          </Button>
-      </div>
-      <AceEditor
+        <Nav.Item eventKey="json">Definition</Nav.Item>
+        <Nav.Item eventKey="log">
+          Log{" "}
+          {parsedConfig.error && (
+            <Icon style={{ color: "crimson" }} icon="exclamation-triangle" />
+          )}
+        </Nav.Item>
+      </Nav>
+
+      {/* <div className="box-toolbar">
+        <Button type="button">Reset</Button>
+      </div> */}
+      {activeTab === "json" && (<AceEditor
         mode="json"
         theme="github"
         width="100%"
         height="300px"
         value={config}
-        onChange={v => {
-          console.log("v")
-          if(!isEqual(v, currentConfig)){
-            setConfig(v)
+        onChange={(v) => {
+          console.log("v");
+          if (!isEqual(v, currentConfig)) {
+            setConfig(v);
           }
         }}
         editorProps={{ $blockScrolling: true }}
-      />
+      />)}
+        {activeTab === "log" && (
+        <div className="log-datatypes">
+          {parsedConfig.error &&
+            (parsedConfig.error.message || "Error parsing json")}
+        </div>
+      )}
+
+
       <Divider></Divider>
       <Message
         description={footerMessage}
         mode={
-          parsedConfig.error
-            ? "error"
-            : parsedConfig.value
-            ? "success"
-            : "info"
+          parsedConfig.error ? "error" : parsedConfig.value ? "success" : "info"
         }
-      >
-        
-      </Message>
+      ></Message>
     </Panel>
   );
 }

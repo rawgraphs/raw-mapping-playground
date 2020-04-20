@@ -1,23 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from "react";
 import AceEditor from "react-ace";
 import get from "lodash/get";
 import isEqual from "lodash/isEqual";
 import isString from "lodash/isString";
 import { usePipelineActions, usePipelineState } from "../state";
 import isPlainObject from "lodash/isPlainObject";
-import { Panel, Divider, Message, Button } from "rsuite";
-
-
-function validateType(t) {
-  const types = ["number", "date", "string", "boolean"];
-  if (isString(t) && types.indexOf(t) === -1) {
-    return false;
-  }
-  if (isPlainObject(t) && (!t.type || types.indexOf(t.type) === -1)) {
-    return false;
-  }
-  return true;
-}
+import { Panel, Divider, Message, Button, Nav, Icon } from "rsuite";
 
 //#TODO: this should come from raw-lib
 function validateMapper(mapper) {
@@ -26,18 +14,23 @@ function validateMapper(mapper) {
   }
 }
 
-export default function DataBoxMapper({ title, footerMessage, mode = "text", onChange }) {
-  
-  const {setMapper} = usePipelineActions()
-  const {mapping, loadedAt } = usePipelineState()
+export default function DataBoxMapper({
+  title,
+  footerMessage,
+  mode = "text",
+  onChange,
+}) {
+  const { setMapper } = usePipelineActions();
+  const { mapping, loadedAt } = usePipelineState();
+
+  const [activeTab, setActiveTab] = useState("json");
 
   const currentMapper = get(mapping, "mapper");
   const [userMapper, setUserMapper] = useState("");
-  console.log("currentMapper" , currentMapper)
 
   const currentMapperString = useMemo(() => {
-    return JSON.stringify(currentMapper, null, 2)
-  }, [currentMapper])
+    return JSON.stringify(currentMapper, null, 2);
+  }, [currentMapper]);
 
   const parsedMapper = useMemo(() => {
     if (!userMapper) {
@@ -53,14 +46,11 @@ export default function DataBoxMapper({ title, footerMessage, mode = "text", onC
       return { error: err };
     }
   }, [userMapper]);
-  
-  
 
   useEffect(() => {
     setUserMapper(currentMapperString);
-    
   }, [loadedAt]);
-  
+
   // useEffect(() => {
   //   if ((!userMapper && currentMapper)) {
   //     setUserMapper(currentMapperString);
@@ -73,7 +63,6 @@ export default function DataBoxMapper({ title, footerMessage, mode = "text", onC
   //   }
   // }, [userMapper, currentMapper, currentMapperString]);
 
-
   useEffect(() => {
     if (parsedMapper.error) {
       return;
@@ -85,41 +74,56 @@ export default function DataBoxMapper({ title, footerMessage, mode = "text", onC
   }, [currentMapper, parsedMapper, setMapper]);
 
   return (
-    <Panel
-      shaded
-      collapsible defaultExpanded
-      header={title}
+    <Panel shaded collapsible defaultExpanded header={title}>
+      <Nav
+        activeKey={activeTab}
+        appearance="tabs"
+        onSelect={setActiveTab}
+        style={{ marginBottom: 18 }}
       >
-      
-      <div className="box-toolbar">
+        <Nav.Item eventKey="json">Definition</Nav.Item>
+        <Nav.Item eventKey="log">
+          Log{" "}
+          {parsedMapper.error && (
+            <Icon style={{ color: "crimson" }} icon="exclamation-triangle" />
+          )}
+        </Nav.Item>
+      </Nav>
+
+      {/* <div className="box-toolbar">
           <Button type="button">
             Reset
           </Button>
-      </div>
-      <AceEditor
-        mode="json"
-        theme="github"
-        width="100%"
-        height="300px"
-        value={userMapper}
-        onChange={v => {
-          setUserMapper(v)
-        }}
-        editorProps={{ $blockScrolling: true }}
-      />
+      </div> */}
+
+      {activeTab === "json" && (
+        <AceEditor
+          mode="json"
+          theme="github"
+          width="100%"
+          height="300px"
+          value={userMapper}
+          onChange={(v) => {
+            setUserMapper(v);
+          }}
+          editorProps={{ $blockScrolling: true }}
+        />
+      )}
+      {activeTab === "log" && (
+        <div className="log-datatypes">
+          {parsedMapper.error &&
+            (parsedMapper.error.message || "Error parsing json")}
+        </div>
+      )}
+
       <Divider></Divider>
+
       <Message
         description={footerMessage}
         mode={
-          parsedMapper.error
-            ? "error"
-            : parsedMapper.value
-            ? "success"
-            : "info"
+          parsedMapper.error ? "error" : parsedMapper.value ? "success" : "info"
         }
-      >
-        
-      </Message>
+      ></Message>
     </Panel>
   );
 }
