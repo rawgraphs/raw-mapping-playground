@@ -20,6 +20,7 @@ const EMPTY_PIPELINE = {
   // internals --- not to be exported
   loadedAt: null,
   computing: false,
+  mapperError: null,
 
   // state
   data: null,
@@ -89,6 +90,10 @@ function pipelineReducer(state, action) {
       return { ...state, computing: action.payload };
     }
 
+    case "SET_MAPPER_ERROR": {
+      return { ...state, mapperError: action.payload };
+    }
+
     default: {
       throw new Error(`Unsupported action type: ${action.type}`);
     }
@@ -104,7 +109,7 @@ export function PipelineProvider(props) {
 export function PipelineStateProvider(props) {
   const [state, dispatch] = useContext(PipelineContext);
   const value = React.useMemo(
-    () => pick(state, ["data", "loaders", "parser", "mapping", "loadedAt"]),
+    () => pick(state, ["data", "loaders", "parser", "mapping", "loadedAt", "mapperError"]),
     [state]
   );
   return <PipelineStateContext.Provider value={value} {...props} />;
@@ -181,6 +186,11 @@ export function PipelineActionsProvider(props) {
     [dispatch]
   );
 
+  const setMapperError = useCallback(
+    (mapperError) => dispatch({ type: "SET_MAPPER_ERROR", payload: mapperError }),
+    [dispatch]
+  );
+
   const value = React.useMemo(
     () => ({
       setData,
@@ -192,6 +202,7 @@ export function PipelineActionsProvider(props) {
       setMapperResults,
       setPipeline,
       setComputing,
+      setMapperError,
     }),
     [
       setComputing,
@@ -203,6 +214,7 @@ export function PipelineActionsProvider(props) {
       setMappingConfig,
       setParseDatasetResults,
       setPipeline,
+      setMapperError,
     ]
   );
 

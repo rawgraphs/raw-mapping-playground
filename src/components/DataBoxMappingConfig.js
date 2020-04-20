@@ -8,7 +8,7 @@ import isPlainObject from "lodash/isPlainObject";
 import { Panel, Divider, Message, Button, Nav, Icon } from "rsuite";
 
 //#TODO: this should come from raw-lib
-function validateMapping(mapper) {
+function validateMappingShape(mapper) {
   if (false) {
     throw new Error(`invalid mapper definition`);
   }
@@ -16,7 +16,7 @@ function validateMapping(mapper) {
 
 export default function DataBoxMappingConfig({ title, footerMessage }) {
   const { setMappingConfig } = usePipelineActions();
-  const { mapping, loadedAt } = usePipelineState();
+  const { mapping, mapperError, loadedAt } = usePipelineState();
   const [activeTab, setActiveTab] = useState("json");
 
   const currentConfig = get(mapping, "config");
@@ -27,19 +27,24 @@ export default function DataBoxMappingConfig({ title, footerMessage }) {
   }, [loadedAt]);
 
   const parsedConfig = useMemo(() => {
+    if(mapperError){
+      return { error: mapperError}
+    }
     if (!config) {
       const out = { value: null };
       return out;
     }
     try {
       const value = JSON.parse(config);
-      validateMapping(value);
+      //this is just a "formal" validation of the config, actual one depends 
+      //on this configuration and the actual mapper definition
+      validateMappingShape(value);
       const out = { value };
       return out;
     } catch (err) {
       return { error: err };
     }
-  }, [config]);
+  }, [config, mapperError]);
 
   useEffect(() => {
     if (parsedConfig.error) {

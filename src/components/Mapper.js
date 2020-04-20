@@ -8,7 +8,7 @@ import get from "lodash/get";
 import { validateMapping, makeMapper } from "raw-lib";
 
 export default function Mapper() {
-  const { setMapperResults, setComputing } = usePipelineActions();
+  const { setMapperResults, setComputing, setMapperError } = usePipelineActions();
 
   const { mapping, data } = usePipelineState();
   const { parseDatasetResults } = usePipelineResults();
@@ -19,6 +19,7 @@ export default function Mapper() {
       !mapping.mapper ||
       !get(parseDatasetResults, "dataset" || !data)
     ) {
+      setMapperError(null)
       return;
     }
     try {
@@ -28,9 +29,11 @@ export default function Mapper() {
       const mappedData = mapper(parseDatasetResults.dataset);
       setMapperResults(mappedData);
       setComputing(false);
+      setMapperError(null)
     } catch (err) {
       console.error(err);
       setComputing(false);
+      setMapperError(err)
     }
   }, [
     mapping.config,
