@@ -54,7 +54,7 @@ export default function DataBoxDataType({
   const [autoReload, setAutoReload] = useState(false);
 
   useEffect(() => {
-    if ((!currentDataTypes || isEqual(currentDataTypes, {})) && dt) {
+    if (!currentDataTypes && dt) {
       if(data){
         setUserDataTypes(JSON.stringify(dt, null, 2));
       } else {
@@ -65,6 +65,13 @@ export default function DataBoxDataType({
   }, [currentDataTypes, data, dt]);
 
   useEffect(() => {
+    if (autoReload) {
+      setUserDataTypes("")
+    }
+  }, [data, loaders]);
+
+
+  useEffect(() => {
     if (currentDataTypes) {
       setUserDataTypes(JSON.stringify(currentDataTypes, null, 2));
     } else {
@@ -72,15 +79,7 @@ export default function DataBoxDataType({
     }
   }, [loadedAt]);
 
- 
-
-  useEffect(() => {
-    if (autoReload) {
-      console.log("should autoreload", parseDatasetResults)
-      setUserDataTypes("")
-    }
-  }, [data, loaders]);
-
+  
   const parsedDataTypes = useMemo(() => {
     if (!userDataTypes) {
       const out = { value: null };
