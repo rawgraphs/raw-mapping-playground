@@ -6,13 +6,8 @@ import isString from "lodash/isString";
 import { usePipelineActions, usePipelineState } from "../state";
 import isPlainObject from "lodash/isPlainObject";
 import { Panel, Divider, Message, Button, Nav, Icon } from "rsuite";
-
-//#TODO: this should come from raw-lib
-function validateMapper(mapper) {
-  if (false) {
-    throw new Error(`invalid mapper definition`);
-  }
-}
+import { validateMapperDefinition } from 'raw-lib'
+ 
 
 export default function DataBoxMapper({
   title,
@@ -39,7 +34,7 @@ export default function DataBoxMapper({
     }
     try {
       const value = JSON.parse(userMapper);
-      validateMapper(value);
+       validateMapperDefinition(value);
       const out = { value };
       return out;
     } catch (err) {

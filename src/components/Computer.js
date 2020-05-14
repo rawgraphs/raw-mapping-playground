@@ -1,77 +1,65 @@
-import React, { useEffect, useMemo } from 'react'
-import { usePipelineState, usePipelineActions } from '../state'
+import React, { useEffect, useMemo } from "react";
+import { usePipelineState, usePipelineActions } from "../state";
 import { dsvFormat, tsvParse } from "d3-dsv";
-import get from 'lodash/get'
-import { parseDataset } from 'raw-lib'
+import get from "lodash/get";
+import { parseDataset } from "raw-lib";
 
-
-function getLoader(loaders){
-  console.log("loader getter", loaders)
-  const loaderCfg = get(loaders, '[0]')
-  if(!loaderCfg){
-    return null
+function getLoader(loaders) {
+  const loaderCfg = get(loaders, "[0]");
+  if (!loaderCfg) {
+    return null;
   }
 
-  if (loaderCfg.type === 'dsv'){
-    const separator = get(loaderCfg, 'separator', ',')
-    // console.log("sep", separator,  String.raw({raw:separator}) === '\t', separator.length)
-    if(separator === '\\t'){
-      return dsvFormat("\t").parse
+  if (loaderCfg.type === "dsv") {
+    const separator = get(loaderCfg, "separator", ",");
+    if (separator === "\\t") {
+      return dsvFormat("\t").parse;
     }
-    
-    return dsvFormat(separator).parse
+
+    return dsvFormat(separator).parse;
   }
 
-  return null
-
+  return null;
 }
 
+export default function Computer() {
+  const { setParseDatasetResults, setComputing } = usePipelineActions();
 
-export default function Computer(){
+  const { data, loaders, parser } = usePipelineState();
 
-  const { setParseDatasetResults, setComputing} = usePipelineActions()
-
-  const {data, loaders, parser } =  usePipelineState()
-
-  
   const loader = useMemo(() => {
-    return getLoader(loaders)
-  }, [loaders])
+    return getLoader(loaders);
+  }, [loaders]);
 
   // const rawDataset = useMemo(() => {
-    
+
   //   // setComputing(true)
   //   const d = loader(data)
   //   // setComputing(false)
   //   return d
 
   // }, [data, loader])
-  
-
 
   useEffect(() => {
-
-    if(!data || !loader){
-      return
+    if (!data || !loader) {
+      return;
     }
-    
-    setComputing(true)
-    const rawDataset = loader(data)
-    const [dataset, dataTypes, errors] = parseDataset(rawDataset, parser.dataTypes)
-    
+
+    setComputing(true);
+    const rawDataset = loader(data);
+    const [dataset, dataTypes, errors] = parseDataset(
+      rawDataset,
+      parser.dataTypes
+    );
+
     const results = {
       dataset,
       dataTypes,
       errors,
-    }
-    setParseDatasetResults(results)
-    setComputing(false)
+    };
+    setParseDatasetResults(results);
+    setComputing(false);
+  }, [parser.dataTypes, setParseDatasetResults, setComputing, data, loader]);
 
-  }, [parser.dataTypes, setParseDatasetResults, setComputing, data, loader])
-
-
-  return null
-
-
-
+  return null;
 }

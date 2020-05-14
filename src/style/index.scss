@@ -38,3 +38,10 @@ html, body {
     margin: 4px;
     height: 40px;
 }
+
+.toolbar{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}

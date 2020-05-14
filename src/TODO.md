@@ -1,12 +1,12 @@
 
 # Editor
 
-[ ] show "separator" label
-[ ] load file
-[ ] load samples (registration pattern)
+[x] show "separator" label
+[x] load file
+[x] load samples (registration pattern)
 [ ] load from localstorage
 [ ] save to localstorage (name + payload)
-[ ] defer mapping until mapping is valid (validate mapping agaist datatypes)
+[ ] defer mapping until mapping is valid (validate mapping against datatypes)
 
 ## datatypes editor
 
@@ -20,13 +20,13 @@
 
 ## mapper editor
 
-[ ] fix editing
-[ ] log tab  (json validation + definition validation)
+[x] fix editing
+[x] log tab  (json validation + definition validation)
 [ ] better ui (JSON + SELECTOR) ?
 
 ## mapping config editor
 
-[ ] log tab  (json validation + definition validation)
+[x] log tab  (json validation + definition validation)
 [ ] better ui (JSON + SELECTOR) ?
 
 # Lib

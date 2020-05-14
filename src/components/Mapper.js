@@ -35,14 +35,7 @@ export default function Mapper() {
       setComputing(false);
       setMapperError(err)
     }
-  }, [
-    mapping.config,
-    mapping.mapper,
-    parseDatasetResults,
-    setMapperResults,
-    data,
-    setComputing,
-  ]);
+  }, [mapping.config, mapping.mapper, parseDatasetResults, setMapperResults, data, setComputing, setMapperError]);
 
   return null;
 }

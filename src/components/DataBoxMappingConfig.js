@@ -21,15 +21,12 @@ export default function DataBoxMappingConfig({ title, footerMessage }) {
 
   const currentConfig = get(mapping, "config");
   const [config, setConfig] = useState("");
-  console.log("currentConfig", currentConfig);
   useEffect(() => {
     setConfig(JSON.stringify(currentConfig, null, 2));
   }, [loadedAt]);
 
   const parsedConfig = useMemo(() => {
-    if(mapperError){
-      return { error: mapperError}
-    }
+    
     if (!config) {
       const out = { value: null };
       return out;
@@ -44,7 +41,7 @@ export default function DataBoxMappingConfig({ title, footerMessage }) {
     } catch (err) {
       return { error: err };
     }
-  }, [config, mapperError]);
+  }, [config]);
 
   useEffect(() => {
     if (parsedConfig.error) {
@@ -55,6 +52,11 @@ export default function DataBoxMappingConfig({ title, footerMessage }) {
     }
     setMappingConfig(parsedConfig.value);
   }, [currentConfig, parsedConfig, setMappingConfig]);
+
+  const error = useMemo(() => {
+    return parsedConfig.error ? parsedConfig.error : mapperError
+
+  }, [parsedConfig, mapperError])
 
   return (
     <Panel shaded collapsible defaultExpanded header={title}>
@@ -67,7 +69,7 @@ export default function DataBoxMappingConfig({ title, footerMessage }) {
         <Nav.Item eventKey="json">Definition</Nav.Item>
         <Nav.Item eventKey="log">
           Log{" "}
-          {parsedConfig.error && (
+          {error && (
             <Icon style={{ color: "crimson" }} icon="exclamation-triangle" />
           )}
         </Nav.Item>
@@ -83,7 +85,6 @@ export default function DataBoxMappingConfig({ title, footerMessage }) {
         height="300px"
         value={config}
         onChange={(v) => {
-          console.log("v");
           if (!isEqual(v, currentConfig)) {
             setConfig(v);
           }
@@ -92,8 +93,8 @@ export default function DataBoxMappingConfig({ title, footerMessage }) {
       />)}
         {activeTab === "log" && (
         <div className="log-datatypes">
-          {parsedConfig.error &&
-            (parsedConfig.error.message || "Error parsing json")}
+          {error &&
+            (error.message || "Error parsing json")}
         </div>
       )}
 
@@ -102,7 +103,7 @@ export default function DataBoxMappingConfig({ title, footerMessage }) {
       <Message
         description={footerMessage}
         mode={
-          parsedConfig.error ? "error" : parsedConfig.value ? "success" : "info"
+          error ? "error" : parsedConfig.value ? "success" : "info"
         }
       ></Message>
     </Panel>
